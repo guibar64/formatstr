@@ -68,3 +68,37 @@ suite "format":
       str.format(who, where)
     check whereis("Yoda", "Ryan", "the kitchen") == "In the kitchen, Ryan is"
     check whereis("OB1", "Ryan", "the kitchen") == "Ryan is in the kitchen"
+
+  test "invalid":
+    expect(SyntaxError):
+      let s = "{1} {}".format(1, 2)
+    expect(SyntaxError):
+      let s = "{2} {3}".format(1, 2)
+    expect(SyntaxError):
+      let s = "{} }".format(1)
+
+
+suite "format by string":
+
+  test "basic":
+    check "hello {name}".format({"name": "Bob"}) == "hello Bob"
+
+  test "invalid":
+    expect(ValueError):
+      let s = "{one} {two} {three}".format({"one": 1, "two": 2})
+    expect(ValueError):
+      let s = "{one} {} {two}".format({"one": 1, "two": 2})
+    expect(ValueError):
+      let s = "{1} {2}".format({"one": 1, "two": 2})
+    
+
+  test "numbers":
+    doAssert format("{age:<10d}", {"age": 55}) == "55        "
+    doAssert format("{one}\\{{pi:.3g} {pi:.3f} {pi:.3e} {pi:.3f}\\}", {"one": 1, "pi": 3.1415, "w": 1.777777e7}) == "1{3.14 3.142 3.142e+00 3.142}"
+
+  test "example":
+    check "Hello {his name}, I am number {my number}".format({"my number": 33, "his name": "Bob"}) == "Hello Bob, I am number 33"
+
+  test "peio":
+    var str = "{name} lives {distance:.1f} km from {where:>10}."
+    check str.format({"name": "Peio", "where": "Garazi", "distance": 8 / 3}) == "Peio lives 2.7 km from     Garazi."
