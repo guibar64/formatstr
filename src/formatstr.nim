@@ -61,18 +61,23 @@ proc nextFmt*(s: var FmtHelper): bool =
   while i < s.s.len:
     case s.s[i]
     of '\\':
-      case s.s[i+1]
-      of '{', '}':
-        s.result.add s.s[i+1]
-        i += 2
-      else: discard
+      if i + 1 > s.s.len:
+        s.result.add s.s[i]
+      else:
+        case s.s[i+1]
+        of '{', '}':
+          s.result.add s.s[i+1]
+          i += 2
+        else:
+          s.result.add s.s[i]
+          i += 1
     of '{':
       var pos: int
       let p = parseUntil(s.s, fs, '}', i+1)
       let pt = if s.namedArgs: parseUntil(fs, s.argString, ':', 0) else: parseInt(fs, pos)
       if not s.namedArgs:
         if pt <= 0:
-          if s.notNumber: raise newException(SyntaxError, "Cannot use unumbered format argument after first numbered ones")
+          if s.notNumber: raise newException(SyntaxError, "Cannot use unnumbered format argument after first numbered ones")
           pos = s.i
           inc(s.i)
         else:
@@ -89,6 +94,8 @@ proc nextFmt*(s: var FmtHelper): bool =
       raise newException(SyntaxError, fmt"Incorrect format at char {i} on {s}")
     else:
       let p = parseUntil(s.s, fs, speChars, i)
+      if p == 0:
+        raise newException(ValueError, "Unexpected error in format string.")
       s.result.add fs
       i += p
 
