@@ -63,6 +63,7 @@ proc nextFmt*(s: var FmtHelper): bool =
     of '\\':
       if i + 1 >= s.s.len:
         s.result.add s.s[i]
+        i += 1
       else:
         case s.s[i+1]
         of '{', '}':
