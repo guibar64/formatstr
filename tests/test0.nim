@@ -77,6 +77,10 @@ suite "format":
     expect(SyntaxError):
       let s = "{} }".format(1)
 
+  test "backslash":
+    check format("\\\\{\\}\\}\\{") == "\\{}}{"
+    check format("\\\\\\{{}\\\\", 3) == "\\\\{3\\\\"
+    check format("\\", 3) == "\\"
 
 suite "format by string":
 
@@ -90,14 +94,16 @@ suite "format by string":
       let s = "{one} {} {two}".format({"one": 1, "two": 2})
     expect(ValueError):
       let s = "{1} {2}".format({"one": 1, "two": 2})
-    
+
 
   test "numbers":
     doAssert format("{age:<10d}", {"age": 55}) == "55        "
-    doAssert format("{one}\\{{pi:.3g} {pi:.3f} {pi:.3e} {pi:.3f}\\}", {"one": 1, "pi": 3.1415, "w": 1.777777e7}) == "1{3.14 3.142 3.142e+00 3.142}"
+    doAssert format("{one}\\{{pi:.3g} {pi:.3f} {pi:.3e} {pi:.3f}\\}", {"one": 1, "pi": 3.1415,
+        "w": 1.777777e7}) == "1{3.14 3.142 3.142e+00 3.142}"
 
   test "example":
-    check "Hello {his name}, I am number {my number}".format({"my number": 33, "his name": "Bob"}) == "Hello Bob, I am number 33"
+    check "Hello {his name}, I am number {my number}".format({"my number": 33,
+        "his name": "Bob"}) == "Hello Bob, I am number 33"
 
   test "peio":
     var str = "{name} lives {distance:.1f} km from {where:>10}."
