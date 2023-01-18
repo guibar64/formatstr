@@ -1,5 +1,5 @@
 # Package 
-version       = "0.2.0"
+version       = "0.2.1"
 author        = "G. Bareigts"
 description   = "string interpolation, complement of std/strformat for runtime strings"
 license       = "MIT"
